@@ -2,15 +2,15 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import categoryImage from "../assets/category.png";
-import filter from "../assets/mage_filter.png";
+import categoryImage from "../../assets/category.png";
+import filter from "../../assets/mage_filter.png";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 // import ProductImage from '../../assets/AdireImage.png';
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { MdOutlineCancel } from "react-icons/md";
 import Link from 'next/link';
-import ProductDatas from '../components/ProductDatas'
+import ProductDatas from '../../components/ProductDatas'
 
 
 // const Products = [

@@ -15,6 +15,7 @@ import { HiOutlineShoppingBag } from "react-icons/hi2";
 import { CiCreditCard1 } from "react-icons/ci";
 import Link from 'next/link';
 import { useCart } from "../components/cartContext"
+import colorFilter from "./colorFilter";
 
 
 
@@ -51,7 +52,7 @@ const Products = [
 const colors = ['#EF4646', '#464BEF', '#EFB946', '#46CDEF'];
 
 
-const SingleProduct = ({ ProductData }) => {
+const SingleProduct = () => {
 
 //   const router = useRouter();
 //   const { id } = router.query;
@@ -73,6 +74,7 @@ const SingleProduct = ({ ProductData }) => {
 
 
 
+
   const productRating = 4;
 
   return (
@@ -83,20 +85,20 @@ const SingleProduct = ({ ProductData }) => {
       <div className='max-w-full-md mx-auto md:px-24 max-w-full-sm sm:px-6 max-w-full-lg lg:px-32'>
         <div className=' container mt-20  flex items-top justify-start lg:gap-x-8 sm:gap-y-5  lg:flex-row sm:flex-col'>
           <div className='lg:w-1/2 sm:w-full'>
-            <Image src={ProductData.image || "/default-image.jpg"} alt='product' className='border-2 lg:w-[500px] sm:w-screen lg:h-[600px] sm:h-[300px] object-contain'/>
+            <Image src={ProductImage} alt='product' className='border-2 lg:w-[500px] sm:w-screen lg:h-[600px] sm:h-[300px] object-contain'/>
             <div className='flex  mt-3 gap-x-3'>
-              <Image src={ProductData.image || "/default-image.jpg"} alt='product' className='border-2 w-[159px] h-[80px] object-contain'/>
-              <Image src={ProductData.image || "/default-image.jpg"} alt='product' className='border-2 w-[159px] h-[80px] object-contain'/>
-              <Image src={ProductData.image || "/default-image.jpg"} alt='product' className='border-2 w-[159px] h-[80px] object-contain'/>
+              <Image src={ProductImage} alt='product' className='border-2 w-[159px] h-[80px] object-contain'/>
+              <Image src={ProductImage} alt='product' className='border-2 w-[159px] h-[80px] object-contain'/>
+              <Image src={ProductImage} alt='product' className='border-2 w-[159px] h-[80px] object-contain'/>
             </div>
           </div>
           <div className='lg:w-1/2 sm:w-full'>
-            <h1 className='text-[32px] font-bold'>{ProductData.title}</h1>
+            <h1 className='text-[32px] font-bold'>THE ADIRE ATTIRE</h1>
             <div className='flex items-center gap-x-3 mt-3'>
               <StarRating rating={productRating} />
               <p className='text-[12px] font-medium'>29 Reviews</p>
             </div>
-            <h1 className='font-font2 text-[45px] font-normal mt-2'>₦ {ProductData.price}</h1>
+            <h1 className='font-font2 text-[45px] font-normal mt-2'>₦ 200,000</h1>
             <p className='font-medium text-[14px] border-b-2 py-2'>
             Embrace the vibrant beauty of African culture with our stunning African 
             print design gown. This eye-catching piece features a bold, colorful 
@@ -117,6 +119,7 @@ const SingleProduct = ({ ProductData }) => {
                             </div>   
             </div>
             <div className="mt-4 border-b-2 pb-5">
+              
                             <label className="block mb-2 text-left">COLOR</label>
                             <div className="flex space-x-2">
                                 {colors.map((color) => (
@@ -134,10 +137,10 @@ const SingleProduct = ({ ProductData }) => {
               <button className='py-4 px-7 bg-[#F7F7F7]'>- 1 +</button>
               <button className='bg-black text-[14px] text-white w-full py-4 flex items-center justify-center gap-x-2 hover:bg-[#EFB946] flex-1'
               onClick={() => addToCart(
-                { id: ProductData.id, 
-                  title: ProductData.title, 
-                  price: ProductData.price, 
-                  image: ProductData.image, 
+                { id: Products.id, 
+                  title: Products.title, 
+                  price: Products.price, 
+                  image: Products.image, 
                 })}>
                   ADD TO BAG <HiOutlineShoppingBag />              </button>
               <button className='py-5 px-7 bg-[#F7F7F7]'><CiHeart /></button>
@@ -184,15 +187,15 @@ const SingleProduct = ({ ProductData }) => {
           </h2>
           <div className=''>
             <div className='grid lg:grid-cols-4 gap-10 mt-12 sm:grid-cols-2 md:grid-cols-3'>
-                  {ProductDatas.map((Product) => {
+                  {Products.map((Product, id) => {
                       return (
-                        //   <Link key={Product.id} href={`/shop/product/${Product.id}`}>
-                                  <div className='text-center'>
-                                      <Image src={Product.image || "/default-image.jpg"} alt='newArrival'width={200} height={300} />
+                          <Link key={Product.id} href={`/shop/product/${Product.id}`}>
+                                  <div className=' flex flex-col items-center justify-center text-center'>
+                                      <Image src={Product.image} alt='newArrival'width={200} height={300} />
                                       <p className='text-[14px] font-normal pt-2'>{Product.title}</p>
                                       <h2 className='text-[20px] font-font2 font-normal'>₦ {Product.price}</h2>  
                                   </div>
-                        //   </Link>
+                           </Link>
                       )
                   })}
               </div>

@@ -2,7 +2,7 @@
 
 
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState,  useEffect } from 'react'
 import logo from "../assets/logo.png"
 import { IoPersonOutline } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
@@ -39,6 +39,14 @@ const navbar = () => {
     const [isCartItemsOpen, setIsCartItemsOpen] = useState(false)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [count, setCount] = useState(1);
+    const { cart, addToCart } = useCart();
+    console.log('Cart state:', cart);
+
+    const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+    const [isAnyModalOpen, setIsAnyModalOpen] = useState(false);
+
+
+
     const [cartItems, setCartItems] = useState([
         {
             id: 1,
@@ -76,7 +84,6 @@ const navbar = () => {
             
         },
     ])
-    const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -94,13 +101,24 @@ const navbar = () => {
     };
     const toggleWishlist = () => {
         setIsWishlistOpen(!isWishlistOpen);
+        setIsAnyModalOpen(!isWishlistOpen);
+
     }
     const toggleCartItems = () => {
         setIsCartItemsOpen(!isCartItemsOpen);
+        setIsAnyModalOpen(!isCartItemsOpen);
+
     }
     const toggleSearch = () => {
         setIsSearchOpen(!isSearchOpen);
+        setIsAnyModalOpen(!isSearchOpen);
+
     }
+    const toggleCartModal = () => {
+        setIsCartModalOpen(!isCartModalOpen);
+        setIsAnyModalOpen(!isSearchOpen);
+
+    };
 
     const incrementCount = () => {
         setCount(count + 1);
@@ -116,11 +134,35 @@ const navbar = () => {
         setCartItems(cartItems.filter(item => item.id !== id));
     };
 
-    const { cart } = useCart();
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (isAnyModalOpen) {
+                const modals = document.querySelectorAll('.modal');
+                let isClickInsideModal = false;
+                modals.forEach((modal) => {
+                    if (modal.contains(event.target)) {
+                        isClickInsideModal = true;
+                    }
+                });
 
-    const toggleCartModal = () => {
-        setIsCartModalOpen(!isCartModalOpen);
-    };
+                if (!isClickInsideModal) {
+                    setIsWishlistOpen(false);
+                    setIsCartItemsOpen(false);
+                    setIsSearchOpen(false);
+                    setIsCartModalOpen(false);
+                    setIsAnyModalOpen(false);
+                }
+            }
+        };
+
+        document.body.addEventListener('click', handleOutsideClick);
+
+        return () => {
+            document.body.removeEventListener('click', handleOutsideClick);
+        };
+    }, [isAnyModalOpen]);
+
+    
 
 
   return (
@@ -139,7 +181,7 @@ const navbar = () => {
                         <li><Link href="/about">ABOUT US</Link></li>
                         <li className='flex items-center gap-x-3' onClick={toggleShopDropdown}>SHOP <MdOutlineKeyboardArrowDown /></li>
                             {isShopDropdownOpen && ( 
-                                <div className='absolute bg-white shadow-lg mt-[140px] ml-[100px] border-t-4 border-[#FCBA41]'>
+                                <div className='absolute bg-white shadow-lg mt-[140px] ml-[100px] border-t-4 border-[#FCBA41]' id="shop-dropdown">
                                     <ul className='flex flex-col gap-y-2 p-5 pr-[70px] '>
                                         <li className='hover:border-[#FCBA41] hover:border-b-4'><Link href="/shop/collection">COLLECTION</Link></li>
                                         <li className='hover:border-[#FCBA41] hover:border-b-4'><Link href="/shop/category">CATEGORY</Link></li>
@@ -155,7 +197,7 @@ const navbar = () => {
                 <div className='flex items-center justify-center gap-x-5'>
                     <IoPersonOutline className='sm:hidden lg:block' size={26} onClick={toggleAccountDropdown}/>
                     {isAccountDropdownOpen && ( 
-                                <div className='absolute bg-white shadow-lg mt-[140px] mr-[100px] border-t-4 border-[#FCBA41]'>
+                                <div className='absolute bg-white shadow-lg mt-[140px] mr-[100px] border-t-4 border-[#FCBA41]' id="account-dropdown">
                                     <ul className='flex flex-col gap-y-2 p-5 pr-[70px] '>
                                         <li className='hover:border-[#FCBA41] hover:border-b-4' onClick={toggleAccountDropdown}><Link href="/signup">SIGN UP</Link></li>
                                         <li className='hover:border-[#FCBA41] hover:border-b-4'onClick={toggleAccountDropdown}><Link href="/login">LOGIN</Link></li>
@@ -164,7 +206,7 @@ const navbar = () => {
                             )}
                     <CiHeart className='sm:hidden lg:block' size={26} onClick={toggleWishlist}/>
                     {isWishlistOpen && ( 
-                                <div className='absolute top-20 bg-white shadow-lg mt-[px] mr-[100px] border-t-4 border-[#FCBA41] z-10 w-[350px] h-[550px]'>
+                                <div className='absolute top-20 bg-white shadow-lg mt-[px] mr-[100px] border-t-4 border-[#FCBA41] z-10 w-[350px] h-[550px]' id="wishlist-modal">
                                     <div className='px-4 py-2 flex justify-end'>
                                         <MdOutlineCancel size={22} onClick={toggleWishlist} />
                                     </div>
@@ -190,7 +232,7 @@ const navbar = () => {
                     <CiSearch className='sm:hidden lg:block' size={26} onClick={toggleSearch}/>
                     {isSearchOpen && ( 
                         
-                            <div className='absolute top-20 right-0 left-0 bg-white shadow-lg border-t-4 border-[#FCBA41] z-10 w-[100%] h-[100px]  py-4 px-4'>
+                            <div className='absolute top-20 right-0 left-0 bg-white shadow-lg border-t-4 border-[#FCBA41] z-10 w-[100%] h-[100px]  py-4 px-4' id="search-modal">
                                         
                                         <div className='flex flex-col justify-between  bg-white'>
                                         <searchFilter/>
@@ -208,15 +250,15 @@ const navbar = () => {
                         <BsBag size={26} />
                         <p className='bg-red-500 w-4 h-4 rounded-full flex items-center justify-center text-[8px] text-white absolute -top-1 -right-1'>{cart.length}</p>
                     </div>
-                    <CartModal isOpen={isCartModalOpen} onClose={toggleCartModal}/>
-                    {/* {isCartItemsOpen && ( 
-                                <div className='absolute lg:top-20 sm:top-0 sm:right-0 sm-left-0 sm:bottom-0 bg-white shadow-lg  lg:right-0 sm:mx-auto border-t-4 border-[#FCBA41] z-10 lg:w-[350px] sm:w-[100%] h-screen  py-4 px-4'>
+                    <CartModal isOpen={isCartModalOpen} onClose={toggleCartModal} cart={cart}/>
+                    {isCartItemsOpen && ( 
+                                <div className='absolute lg:top-20 sm:top-0 sm:right-0 sm-left-0 sm:bottom-0 bg-white shadow-lg  lg:right-0 sm:mx-auto border-t-4 border-[#FCBA41] z-10 lg:w-[350px] sm:w-[100%] h-screen  py-4 px-4' id="cart-modal">
                                         
-                                    <div className='overflow-scroll flex flex-col justify-between lg:h-[500px] sm:h-[500px] bg-white'>
+                                    <div className=' flex flex-col  lg:h-[500px] sm:h-[500px] bg-white'>
                                         <div>
                                             <div className=' py-5 flex items-center justify-between'>
-                                                <p className='font-normal text-[14px]'>Item added in your bag ( 1 ) </p>
-                                                <MdOutlineCancel size={22} onClick={toggleCartItems} />
+                                                <p className='font-normal text-[14px]'>Item added in your bag ( 0 ) </p>
+                                                <MdOutlineCancel size={22} onClick={toggleCartModal} />
                                             </div>
                                             <ul className='flex flex-col gap-y-2'>
                                                 {cartItems.map(item => (
@@ -254,7 +296,7 @@ const navbar = () => {
                                         </div>
                                     </div>
                                 </div>
-                            )} */}
+                            )}
 
 
                 </div>
