@@ -12,7 +12,7 @@ const NewArrival = () => {
       <div className="text-center">
         <div className="grid lg:grid-cols-4 gap-8 mt-12 sm:grid-cols-2 md:grid-cols-3">
           {ProductDatas.map((Product) => (
-            <Link key={Product.id} href={`/shop/product/${Product.id}`}>
+            <Link key={Product.id} href="/shop/product/">
               <div className="flex flex-col items-center justify-center text-center">
                 <Image
                   src={Product.image || '/default-image.png'} // Use default if image is missing
